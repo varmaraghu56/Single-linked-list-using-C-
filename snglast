@@ -1,0 +1,209 @@
+#include<stdio.h>
+#include<stdlib.h>
+typedef struct snglst
+{
+ int data;
+ struct snglst *lnk;
+}snglst;
+snglst *strt,*nxt,*tmp;
+int n,i,elm,pos;
+main()
+{
+ int ch;
+ void creation();
+ void display();
+ void revdisplay(snglst*);
+ void insertion();
+ void deletion();
+ void search();
+ strt=NULL;
+ while(1)
+ {
+ printf("\n");
+ printf("1.Creation \n");
+ printf("2.Display \n");
+ printf("3.Revdisplay \n");
+ printf("4.Insertion \n");
+ printf("5.Deletion \n");
+ printf("6.Search \n");
+ printf("7.Exit \n");
+ printf("Select ur choice \n");
+ scanf("%d",&ch);
+ switch(ch)
+ {
+ case 1:
+ creation();
+ break;
+ case 2:
+ display();
+ break;
+ case 3:
+ printf("List is ");
+ revdisplay(strt);
+ break;
+ case 4:
+ insertion();
+ break;
+ case 5:
+ deletion();
+ break;
+ case 6:
+ search();
+ break;
+ case 7:
+ free(strt);
+ exit(0);
+ default:
+ printf("Invalid choice \n"); 
+ }
+ }
+}
+void creation()
+{
+ strt=NULL;
+ printf("Enter the range ");
+ scanf("%d",&n);
+ for(i=0;i<n;i++)
+ {
+ tmp=(snglst*)malloc(sizeof(snglst));
+ printf("Enter the value");
+ scanf("%d",&elm);
+ tmp->data=elm;
+ tmp->lnk=NULL;
+ if(strt==NULL)
+ {
+ strt=tmp;
+ nxt=tmp;
+ }
+ else
+ {
+ nxt->lnk=tmp;
+ nxt=tmp;
+ }
+ }
+ printf("List is created successfully");
+}
+void display()
+{
+ if(strt==NULL)
+ {
+ printf("List is empty");
+ return;
+ }
+ printf("The update list is \n");
+ nxt=strt;
+ while(nxt!=NULL)
+ {
+ printf("%d ",nxt->data);
+ nxt=nxt->lnk;
+ }
+}
+void revdisplay(snglst *rev)
+{
+ if(strt==NULL)
+ {
+ printf("List is empty");
+ return;
+ }
+ if(rev==NULL)
+ return;
+ else
+ {
+ revdisplay(rev->lnk);
+ printf("%d ",rev->data);
+ }
+}
+void search()
+{
+ if(strt==NULL)
+ {
+ printf("List is Empty");
+ return;
+ }
+ nxt=strt;
+ pos=1;
+ printf("Enter the value to search");
+ scanf("%d",&elm);
+ while(nxt!=NULL)
+ {
+ if(nxt->data==elm)
+ {
+ printf("%d is found at pos %d",elm,pos);
+ return;
+ }
+ nxt=nxt->lnk;
+ pos++;
+ }
+ if(nxt==NULL)
+ printf("%d is not found",elm);
+}
+void insertion()
+{
+ if(strt==NULL)
+ {
+ printf("List is Empty");
+ return;
+ }
+ printf("Enter the position to insert");
+ scanf("%d",&pos);
+ if(pos<1 || pos>n+1)
+ {
+ printf("%d is out of range",pos);
+ return;
+ }
+ tmp=(snglst*)malloc(sizeof(snglst));
+ printf("Enter the new element");
+ scanf("%d",&elm);
+ tmp->data=elm;
+ if(pos==1)
+ {
+ tmp->lnk=strt;
+ strt=tmp;
+ }
+ else
+ {
+ nxt=strt;
+ for(i=1;i<pos-1;i++)//move the pntr to pos-1
+ nxt=nxt->lnk;
+ 
+ tmp->lnk=nxt->lnk;//to connect a new node in middle
+ nxt->lnk=tmp;
+ }
+ n++;
+ printf("%d is inserted at pos %d successfully",elm,pos);
+}
+void deletion()
+{
+ if(strt==NULL)
+ {
+ printf("List is empty");
+ return;
+ }
+ printf("Enter the elm to delete");
+ scanf("%d",&elm);
+ if(elm==strt->data)
+ {
+ tmp=strt;
+ strt=tmp->lnk;
+ free(tmp);
+ }
+ else
+ {
+ nxt=strt;
+ while(nxt->lnk!=NULL)
+ {
+ if(nxt->lnk->data==elm)
+ {
+ tmp=nxt->lnk;
+ nxt->lnk=tmp->lnk;
+ free(tmp);
+ n--;
+ break;
+ }
+ nxt=nxt->lnk;
+ }
+ if(nxt->lnk==NULL)
+ printf("%d is not found in the list",elm);
+ }
+ printf("Deleted successfully");
+}
